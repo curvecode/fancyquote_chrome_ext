@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "copy-files": "node copy-files.js",
-    "dev": "npm run copy-files && vite build --watch --mode development",
-    "build": "npm run copy-files && vite build",
-    "build:prod": "npm run copy-files && vite build --mode production",
+    "copy-files:dev": "node copy-files.js --mode=development",
+    "copy-files:prod": "node copy-files.js --mode=production",
+    "dev": "vite build --watch --mode development && npm run copy-files:dev",
+    "build": "vite build && npm run copy-files:dev",
+    "build:prod": "vite build --mode production && npm run copy-files:prod",
     "type-check": "tsc --noEmit",
     "clean": "rimraf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@types/chrome": "^0.1.28",
     "@types/node": "^20.0.0",
+    "html-minifier-terser": "^7.2.0",
     "rimraf": "^5.0.0",
     "ts-loader": "^9.5.4",
     "typescript": "^5.9.3",
