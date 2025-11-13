@@ -1,0 +1,36 @@
+{
+  "name": "fancyquote",
+  "version": "1.0.0",
+  "description": "Save copied text in browser",
+  "main": "index.js",
+  "scripts": {
+    "copy-files": "node copy-files.js",
+    "dev": "npm run copy-files && vite build --watch --mode development",
+    "build": "npm run copy-files && vite build",
+    "build:prod": "npm run copy-files && vite build --mode production",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/curvecode/fancyquote_vite.git"
+  },
+  "keywords": [
+    "fancyquotes"
+  ],
+  "author": "curvecode",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/curvecode/fancyquote_vite/issues"
+  },
+  "homepage": "https://github.com/curvecode/fancyquote_vite#readme",
+  "devDependencies": {
+    "@types/chrome": "^0.1.28",
+    "@types/node": "^20.0.0",
+    "rimraf": "^5.0.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2"
+  }
+}

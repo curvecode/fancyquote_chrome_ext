@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Clipper</title>
+  <style>
+    body {
+      width: 400px;
+      min-height: 300px;
+      margin: 0;
+      padding: 16px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 300;
+    }
+
+    .stats {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .clips-container {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .clip-item {
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .clip-text {
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      word-break: break-word;
+      max-height: 60px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .clip-meta {
+      font-size: 11px;
+      opacity: 0.8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .clip-url {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .clip-url:hover {
+      text-decoration: underline;
+    }
+
+    .clip-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 10px;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      opacity: 0.7;
+    }
+
+    .empty-state h3 {
+      margin: 0 0 10px 0;
+      font-weight: 300;
+    }
+
+    .empty-state p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* Scrollbar styling */
+    .clips-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .clips-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+    }
+
+    .clips-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+
+    .clips-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📋 Text Clipper</h1>
+  </div>
+
+  <div class="stats">
+    <span id="clipCount">Loading...</span>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="refreshBtn">🔄 Refresh</button>
+    <button class="btn" id="clearBtn">🗑️ Clear All</button>
+    <button class="btn" id="exportBtn">📤 Export</button>
+  </div>
+
+  <div class="clips-container" id="clipsContainer">
+    <div class="loading">
+      <p>Loading your clips...</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

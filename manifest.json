@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Text Clipper",
+  "version": "1.0",
+  "description": "Lưu các đoạn văn bản được chọn.",
+  "permissions": ["storage", "activeTab", "contextMenus", "identity", "scripting", "notifications"],
+  "oauth2": {
+    "client_id": "ID_CLIENT_CỦA_BẠN.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/drive.file"]
+  },
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_title": "Text Clipper",
+    "default_popup": "popup.html"
+  }
+}
