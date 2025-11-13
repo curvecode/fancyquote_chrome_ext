@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Text Clipper",
+    "message": "Fancy Quotes Clipper",
     "description": "Tên của extension"
   },
   "extensionDescription": {
@@ -12,7 +12,7 @@
     "description": "Tiêu đề cho mục menu chuột phải"
   },
   "popupTitle": {
-    "message": "📋 Text Clipper",
+    "message": "📋 Fancy Quotes Clipper",
     "description": "Tiêu đề hiển thị trong popup"
   },
   "statsText": {

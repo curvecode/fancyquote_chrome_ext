@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Text Clipper",
+    "message": "Fancy Quotes Clipper",
     "description": "Název rozšíření"
   },
   "extensionDescription": {
@@ -12,7 +12,7 @@
     "description": "Název položky kontextového menu"
   },
   "popupTitle": {
-    "message": "📋 Text Clipper",
+    "message": "📋 Fancy Quotes Clipper",
     "description": "Název zobrazený v popup okně"
   },
   "statsText": {

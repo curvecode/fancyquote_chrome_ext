@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Text Clipper",
+    "message": "Fancy Quotes Clipper",
     "description": "Name of the extension"
   },
   "extensionDescription": {
@@ -12,7 +12,7 @@
     "description": "Title for context menu item"
   },
   "popupTitle": {
-    "message": "📋 Text Clipper",
+    "message": "📋 Fancy Quotes Clipper",
     "description": "Title displayed in popup"
   },
   "statsText": {

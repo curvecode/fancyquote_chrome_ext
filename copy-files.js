@@ -20,12 +20,15 @@ const htmlFiles = [
 
 // Static files to copy without modification
 const staticFiles = [
-  'manifest.json', 'icon16.png'
+  'manifest.json', 
+  'icon16.png',
+  'icon_success.png',
 ];
 
 // Directories to copy recursively
 const directoriesToCopy = [
-  '_locales'
+  '_locales',
+  'icons'
 ];
 
 // HTML minification options - more aggressive for production

@@ -148,7 +148,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         // Show notification to user
         chrome.notifications.create({
           type: "basic",
-          iconUrl: "icon16.png",
+          iconUrl: "icons/icon48.png",
           title: backgroundLangManager.getMessage("extensionName"),
           message: backgroundLangManager.getMessage("notificationSuccess"),
         });
@@ -156,7 +156,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         console.log("No text was selected.");
         chrome.notifications.create({
           type: "basic",
-          iconUrl: "icon16.png",
+          iconUrl: "icons/icon48.png",
           title: backgroundLangManager.getMessage("extensionName"),
           message: backgroundLangManager.getMessage("notificationNoText"),
         });
@@ -165,7 +165,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     console.error("Error sending message:", error);
     chrome.notifications.create({
       type: "basic",
-      iconUrl: "icon16.png",
+      iconUrl: "icons/icon48.png",
       title: backgroundLangManager.getMessage("extensionName"),
       message: backgroundLangManager.getMessage("notificationError"),
     });
