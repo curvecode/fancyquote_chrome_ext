@@ -1,0 +1,160 @@
+{
+  "extensionName": {
+    "message": "Text Clipper",
+    "description": "Tên của extension"
+  },
+  "extensionDescription": {
+    "message": "Lưu văn bản được sao chép trong trình duyệt",
+    "description": "Mô tả của extension"
+  },
+  "contextMenuTitle": {
+    "message": "Lưu đoạn text này",
+    "description": "Tiêu đề cho mục menu chuột phải"
+  },
+  "popupTitle": {
+    "message": "📋 Text Clipper",
+    "description": "Tiêu đề hiển thị trong popup"
+  },
+  "statsText": {
+    "message": "$COUNT$ đoạn đã lưu",
+    "description": "Văn bản hiển thị số lượng đoạn đã lưu",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "refreshButton": {
+    "message": "🔄 Làm mới",
+    "description": "Văn bản nút làm mới"
+  },
+  "clearAllButton": {
+    "message": "🗑️ Xóa tất cả",
+    "description": "Văn bản nút xóa tất cả"
+  },
+  "exportButton": {
+    "message": "📤 Xuất",
+    "description": "Văn bản nút xuất"
+  },
+  "emptyStateTitle": {
+    "message": "Chưa có đoạn nào được lưu",
+    "description": "Tiêu đề khi chưa có đoạn nào được lưu"
+  },
+  "emptyStateDescription": {
+    "message": "Nhấp chuột phải trên văn bản đã chọn và chọn \"$MENU_TITLE$\" để bắt đầu lưu đoạn!",
+    "description": "Mô tả cho trạng thái trống",
+    "placeholders": {
+      "menu_title": {
+        "content": "$1",
+        "example": "Lưu đoạn text này"
+      }
+    }
+  },
+  "notificationSuccess": {
+    "message": "Đã lưu văn bản thành công!",
+    "description": "Thông báo thành công"
+  },
+  "notificationNoText": {
+    "message": "Không có văn bản nào được chọn.",
+    "description": "Thông báo khi không có văn bản được chọn"
+  },
+  "notificationError": {
+    "message": "Có lỗi xảy ra khi lưu văn bản.",
+    "description": "Thông báo lỗi"
+  },
+  "copyToClipboard": {
+    "message": "📋",
+    "description": "Nút sao chép vào clipboard"
+  },
+  "deleteClip": {
+    "message": "🗑️",
+    "description": "Nút xóa đoạn"
+  },
+  "confirmClearAll": {
+    "message": "Bạn có chắc chắn muốn xóa tất cả đoạn? Hành động này không thể hoàn tác.",
+    "description": "Thông báo xác nhận xóa tất cả đoạn"
+  },
+  "toastCopied": {
+    "message": "Đã sao chép vào clipboard!",
+    "description": "Thông báo toast khi văn bản được sao chép"
+  },
+  "toastDeleted": {
+    "message": "Đã xóa đoạn",
+    "description": "Thông báo toast khi đoạn được xóa"
+  },
+  "toastAllDeleted": {
+    "message": "Đã xóa tất cả đoạn",
+    "description": "Thông báo toast khi tất cả đoạn được xóa"
+  },
+  "toastExported": {
+    "message": "Đã tải xuống bản xuất",
+    "description": "Thông báo toast khi xuất hoàn tất"
+  },
+  "toastNoClipsToExport": {
+    "message": "Không có đoạn nào để xuất",
+    "description": "Thông báo toast khi không có đoạn để xuất"
+  },
+  "toastCopyError": {
+    "message": "Không thể sao chép văn bản",
+    "description": "Thông báo toast khi sao chép thất bại"
+  },
+  "toastDeleteError": {
+    "message": "Không thể xóa đoạn",
+    "description": "Thông báo toast khi xóa thất bại"
+  },
+  "toastClearError": {
+    "message": "Không thể xóa đoạn",
+    "description": "Thông báo toast khi xóa thất bại"
+  },
+  "toastExportError": {
+    "message": "Không thể xuất đoạn",
+    "description": "Thông báo toast khi xuất thất bại"
+  },
+  "loadingText": {
+    "message": "Đang tải đoạn của bạn...",
+    "description": "Thông báo đang tải"
+  },
+  "errorTitle": {
+    "message": "Lỗi",
+    "description": "Tiêu đề lỗi"
+  },
+  "timeAgoNow": {
+    "message": "vừa xong",
+    "description": "Thời gian: vừa xong"
+  },
+  "timeAgoMinutes": {
+    "message": "$COUNT$ phút trước",
+    "description": "Thời gian: phút",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "timeAgoHours": {
+    "message": "$COUNT$ giờ trước",
+    "description": "Thời gian: giờ",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "timeAgoDays": {
+    "message": "$COUNT$ ngày trước",
+    "description": "Thời gian: ngày",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "languageChanged": {
+    "message": "Đã thay đổi ngôn ngữ thành công!",
+    "description": "Thông báo toast khi ngôn ngữ được thay đổi"
+  }
+}

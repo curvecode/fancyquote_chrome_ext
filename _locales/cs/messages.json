@@ -1,0 +1,160 @@
+{
+  "extensionName": {
+    "message": "Text Clipper",
+    "description": "Název rozšíření"
+  },
+  "extensionDescription": {
+    "message": "Uložit zkopírovaný text v prohlížeči",
+    "description": "Popis rozšíření"
+  },
+  "contextMenuTitle": {
+    "message": "Uložit tento text",
+    "description": "Název položky kontextového menu"
+  },
+  "popupTitle": {
+    "message": "📋 Text Clipper",
+    "description": "Název zobrazený v popup okně"
+  },
+  "statsText": {
+    "message": "$COUNT$ uložených klipů",
+    "description": "Text zobrazující počet uložených klipů",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "refreshButton": {
+    "message": "🔄 Obnovit",
+    "description": "Text tlačítka obnovit"
+  },
+  "clearAllButton": {
+    "message": "🗑️ Smazat vše",
+    "description": "Text tlačítka smazat vše"
+  },
+  "exportButton": {
+    "message": "📤 Exportovat",
+    "description": "Text tlačítka exportovat"
+  },
+  "emptyStateTitle": {
+    "message": "Zatím nejsou uloženy žádné klipy",
+    "description": "Název když nejsou uloženy žádné klipy"
+  },
+  "emptyStateDescription": {
+    "message": "Klikněte pravým tlačítkem na označený text a vyberte \"$MENU_TITLE$\" pro začátek ukládání klipů!",
+    "description": "Popis pro prázdný stav",
+    "placeholders": {
+      "menu_title": {
+        "content": "$1",
+        "example": "Uložit tento text"
+      }
+    }
+  },
+  "notificationSuccess": {
+    "message": "Text byl úspěšně uložen!",
+    "description": "Zpráva o úspěšném uložení"
+  },
+  "notificationNoText": {
+    "message": "Nebyl vybrán žádný text.",
+    "description": "Oznámení když není vybrán žádný text"
+  },
+  "notificationError": {
+    "message": "Při ukládání textu došlo k chybě.",
+    "description": "Chybová zpráva"
+  },
+  "copyToClipboard": {
+    "message": "📋",
+    "description": "Tlačítko kopírovat do schránky"
+  },
+  "deleteClip": {
+    "message": "🗑️",
+    "description": "Tlačítko smazat klip"
+  },
+  "confirmClearAll": {
+    "message": "Opravdu chcete smazat všechny klipy? Tuto akci nelze vrátit zpět.",
+    "description": "Potvrzovací zpráva pro smazání všech klipů"
+  },
+  "toastCopied": {
+    "message": "Zkopírováno do schránky!",
+    "description": "Toast zpráva při zkopírování textu"
+  },
+  "toastDeleted": {
+    "message": "Klip smazán",
+    "description": "Toast zpráva při smazání klipu"
+  },
+  "toastAllDeleted": {
+    "message": "Všechny klipy smazány",
+    "description": "Toast zpráva při smazání všech klipů"
+  },
+  "toastExported": {
+    "message": "Export stažen",
+    "description": "Toast zpráva při dokončení exportu"
+  },
+  "toastNoClipsToExport": {
+    "message": "Žádné klipy k exportu",
+    "description": "Toast zpráva když nejsou žádné klipy k exportu"
+  },
+  "toastCopyError": {
+    "message": "Nepodařilo se zkopírovat text",
+    "description": "Toast zpráva při chybě kopírování"
+  },
+  "toastDeleteError": {
+    "message": "Nepodařilo se smazat klip",
+    "description": "Toast zpráva při chybě mazání"
+  },
+  "toastClearError": {
+    "message": "Nepodařilo se smazat klipy",
+    "description": "Toast zpráva při chybě mazání"
+  },
+  "toastExportError": {
+    "message": "Nepodařilo se exportovat klipy",
+    "description": "Toast zpráva při chybě exportu"
+  },
+  "loadingText": {
+    "message": "Načítání vašich klipů...",
+    "description": "Zpráva načítání"
+  },
+  "errorTitle": {
+    "message": "Chyba",
+    "description": "Název chyby"
+  },
+  "timeAgoNow": {
+    "message": "teď",
+    "description": "Čas: právě teď"
+  },
+  "timeAgoMinutes": {
+    "message": "před $COUNT$ min",
+    "description": "Čas: minuty",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "timeAgoHours": {
+    "message": "před $COUNT$ h",
+    "description": "Čas: hodiny",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "timeAgoDays": {
+    "message": "před $COUNT$ d",
+    "description": "Čas: dny",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "languageChanged": {
+    "message": "Jazyk byl úspěšně změněn!",
+    "description": "Toast zpráva při změně jazyka"
+  }
+}

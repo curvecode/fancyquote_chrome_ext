@@ -18,12 +18,40 @@
     .header {
       text-align: center;
       margin-bottom: 20px;
+      position: relative;
     }
 
     .header h1 {
       margin: 0;
       font-size: 24px;
       font-weight: 300;
+    }
+
+    .language-selector {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .language-dropdown {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      outline: none;
+    }
+
+    .language-dropdown:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .language-dropdown option {
+      background: #667eea;
+      color: white;
     }
 
     .stats {
@@ -167,7 +195,14 @@
 </head>
 <body>
   <div class="header">
-    <h1>📋 Text Clipper</h1>
+    <h1 id="popupTitle">📋 Text Clipper</h1>
+    <div class="language-selector">
+      <select id="languageSelect" class="language-dropdown">
+        <option value="en">EN</option>
+        <option value="vi">VN</option>
+        <option value="cs">CZ</option>
+      </select>
+    </div>
   </div>
 
   <div class="stats">
@@ -182,7 +217,7 @@
 
   <div class="clips-container" id="clipsContainer">
     <div class="loading">
-      <p>Loading your clips...</p>
+      <p id="loadingText">Loading your clips...</p>
     </div>
   </div>
 

@@ -6,13 +6,118 @@ interface ClipData {
   timestamp: number;
 }
 
-// 1. Tạo mục trong Menu Chuột Phải
-chrome.runtime.onInstalled.addListener(() => {
-chrome.contextMenus.create({
-    id: "saveSelectedText",
-    title: "Save this text",
-    contexts: ["selection"], // Only show when text is selected
+// Background Language Manager
+class BackgroundLanguageManager {
+  private currentLanguage: string = 'en';
+  private translations: { [key: string]: { [key: string]: string } } = {};
+
+  async init() {
+    await this.loadSavedLanguage();
+    await this.loadTranslations();
+    this.createContextMenu();
+    this.setupLanguageChangeListener();
+  }
+
+  async loadSavedLanguage() {
+    try {
+      const result = await chrome.storage.sync.get('selectedLanguage');
+      if (result.selectedLanguage) {
+        this.currentLanguage = result.selectedLanguage;
+      } else {
+        // Default to English
+        this.currentLanguage = 'en';
+      }
+    } catch (error) {
+      console.error('Error loading saved language:', error);
+      this.currentLanguage = 'en';
+    }
+  }
+
+  async loadTranslations() {
+    try {
+      const response = await fetch(chrome.runtime.getURL(`_locales/${this.currentLanguage}/messages.json`));
+      const data = await response.json();
+      
+      this.translations[this.currentLanguage] = {};
+      for (const key in data) {
+        this.translations[this.currentLanguage][key] = data[key].message;
+      }
+    } catch (error) {
+      console.error('Error loading translations:', error);
+      // Fallback to chrome.i18n if custom loading fails
+    }
+  }
+
+  getMessage(key: string, substitutions?: string[]): string {
+    // First try custom translations
+    let message = this.translations[this.currentLanguage]?.[key];
+    
+    // Fallback to chrome.i18n
+    if (!message) {
+      try {
+        message = chrome.i18n.getMessage(key, substitutions);
+      } catch (error) {
+        console.error('Error getting i18n message:', error);
+      }
+    }
+    
+    // Final fallback
+    return message || key;
+  }
+
+  createContextMenu() {
+    // Remove existing menu item
+    chrome.contextMenus.removeAll(() => {
+      // Create new menu item with current language
+      chrome.contextMenus.create({
+        id: "saveSelectedText",
+        title: this.getMessage("contextMenuTitle"),
+        contexts: ["selection"]
+      });
+    });
+  }
+
+  setupLanguageChangeListener() {
+    // Listen for language changes from storage
+    chrome.storage.onChanged.addListener(async (changes, namespace) => {
+      if (namespace === 'sync' && changes.selectedLanguage) {
+        const newLanguage = changes.selectedLanguage.newValue;
+        if (newLanguage && newLanguage !== this.currentLanguage) {
+          this.currentLanguage = newLanguage;
+          await this.loadTranslations();
+          this.createContextMenu(); // Recreate menu with new language
+        }
+      }
+    });
+  }
+
+  async updateLanguage(language: string) {
+    if (['en', 'vi', 'cs'].includes(language)) {
+      this.currentLanguage = language;
+      await this.loadTranslations();
+      this.createContextMenu();
+    }
+  }
+}
+
+const backgroundLangManager = new BackgroundLanguageManager();
+
+// 1. Initialize context menu with language support
+chrome.runtime.onInstalled.addListener(async () => {
+  await backgroundLangManager.init();
 });
+
+// Also initialize on startup
+chrome.runtime.onStartup.addListener(async () => {
+  await backgroundLangManager.init();
+});
+
+// Handle messages from popup
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  if (message.action === "updateLanguage") {
+    // Use the public updateLanguage method
+    await backgroundLangManager.updateLanguage(message.language);
+  }
 });
 
 // 2. Lắng nghe sự kiện từ Menu Chuột Phải
@@ -44,16 +149,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         chrome.notifications.create({
           type: "basic",
           iconUrl: "icon16.png",
-          title: "Text Clipper",
-          message: "Text saved successfully!",
+          title: backgroundLangManager.getMessage("extensionName"),
+          message: backgroundLangManager.getMessage("notificationSuccess"),
         });
       } else {
         console.log("No text was selected.");
         chrome.notifications.create({
           type: "basic",
           iconUrl: "icon16.png",
-          title: "Text Clipper",
-          message: "No text was selected.",
+          title: backgroundLangManager.getMessage("extensionName"),
+          message: backgroundLangManager.getMessage("notificationNoText"),
         });
       }
     } catch (error) {
@@ -61,8 +166,8 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     chrome.notifications.create({
       type: "basic",
       iconUrl: "icon16.png",
-      title: "Text Clipper",
-      message: "An error occurred while saving the text.",
+      title: backgroundLangManager.getMessage("extensionName"),
+      message: backgroundLangManager.getMessage("notificationError"),
     });
     }
   }

@@ -23,6 +23,11 @@ const staticFiles = [
   'manifest.json', 'icon16.png'
 ];
 
+// Directories to copy recursively
+const directoriesToCopy = [
+  '_locales'
+];
+
 // HTML minification options - more aggressive for production
 const htmlMinifyOptions = {
   collapseWhitespace: true,
@@ -47,6 +52,30 @@ const htmlMinifyOptions = {
 // Ensure dist directory exists
 if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
+}
+
+// Helper function to copy directories recursively
+function copyDirectoryRecursive(src, dest) {
+  if (!fs.existsSync(src)) {
+    console.warn(`   ⚠️  Directory ${src} not found`);
+    return;
+  }
+
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true });
+  }
+
+  const items = fs.readdirSync(src);
+  items.forEach(item => {
+    const srcPath = path.join(src, item);
+    const destPath = path.join(dest, item);
+
+    if (fs.statSync(srcPath).isDirectory()) {
+      copyDirectoryRecursive(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  });
 }
 
 async function processFiles() {
@@ -104,6 +133,18 @@ async function processFiles() {
       console.log(`   ✅ Copied ${file}`);
     } else {
       console.warn(`   ⚠️  File ${file} not found`);
+    }
+  });
+
+  // Copy directories recursively
+  console.log('\n📁 Copying directories...');
+  directoriesToCopy.forEach(dir => {
+    if (fs.existsSync(dir)) {
+      const destDir = path.join(distDir, dir);
+      copyDirectoryRecursive(dir, destDir);
+      console.log(`   ✅ Copied directory ${dir}`);
+    } else {
+      console.warn(`   ⚠️  Directory ${dir} not found`);
     }
   });
 

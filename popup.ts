@@ -6,12 +6,92 @@ interface ClipData {
   timestamp: number;
 }
 
+// Language management class
+class LanguageManager {
+  private currentLanguage: string = 'en';
+  private translations: { [key: string]: { [key: string]: string } } = {};
+
+  constructor() {
+    this.loadSavedLanguage();
+  }
+
+  async loadSavedLanguage() {
+    try {
+      const result = await chrome.storage.sync.get('selectedLanguage');
+      if (result.selectedLanguage) {
+        this.currentLanguage = result.selectedLanguage;
+      } else {
+        // Detect browser language
+        const browserLang = navigator.language.split('-')[0];
+        if (['en', 'vi', 'cs'].includes(browserLang)) {
+          this.currentLanguage = browserLang;
+        }
+      }
+      await this.loadTranslations();
+    } catch (error) {
+      console.error('Error loading saved language:', error);
+    }
+  }
+
+  async loadTranslations() {
+    try {
+      // Load translations for current language
+      const response = await fetch(`_locales/${this.currentLanguage}/messages.json`);
+      const data = await response.json();
+      
+      this.translations[this.currentLanguage] = {};
+      for (const key in data) {
+        this.translations[this.currentLanguage][key] = data[key].message;
+      }
+    } catch (error) {
+      console.error('Error loading translations:', error);
+      // Fallback to English if loading fails
+      if (this.currentLanguage !== 'en') {
+        this.currentLanguage = 'en';
+        await this.loadTranslations();
+      }
+    }
+  }
+
+  getMessage(key: string, substitutions?: string[]): string {
+    let message = this.translations[this.currentLanguage]?.[key] || key;
+    
+    // Handle substitutions
+    if (substitutions && substitutions.length > 0) {
+      substitutions.forEach((sub, index) => {
+        const placeholder = `$${index + 1}`;
+        message = message.replace(new RegExp(`\\$${index + 1}|\\$${key.toUpperCase()}\\$`, 'g'), sub);
+        message = message.replace(`$COUNT$`, sub);
+        message = message.replace(`$MENU_TITLE$`, sub);
+      });
+    }
+    
+    return message;
+  }
+
+  async setLanguage(language: string) {
+    if (['en', 'vi', 'cs'].includes(language)) {
+      this.currentLanguage = language;
+      await chrome.storage.sync.set({ selectedLanguage: language });
+      await this.loadTranslations();
+      return true;
+    }
+    return false;
+  }
+
+  getCurrentLanguage(): string {
+    return this.currentLanguage;
+  }
+}
+
 class PopupManager {
   private clipsContainer: HTMLElement;
   private clipCountElement: HTMLElement;
   private refreshBtn: HTMLElement;
   private clearBtn: HTMLElement;
   private exportBtn: HTMLElement;
+  private languageSelect: HTMLSelectElement;
+  private languageManager: LanguageManager;
 
   constructor() {
     this.clipsContainer = document.getElementById('clipsContainer')!;
@@ -19,19 +99,69 @@ class PopupManager {
     this.refreshBtn = document.getElementById('refreshBtn')!;
     this.clearBtn = document.getElementById('clearBtn')!;
     this.exportBtn = document.getElementById('exportBtn')!;
+    this.languageSelect = document.getElementById('languageSelect')! as HTMLSelectElement;
+    this.languageManager = new LanguageManager();
 
     this.init();
   }
 
   async init() {
+    await this.languageManager.loadSavedLanguage();
+    this.initializeLanguageSelector();
+    this.initializeI18n();
     await this.loadClips();
     this.setupEventListeners();
+  }
+
+  initializeLanguageSelector() {
+    const currentLang = this.languageManager.getCurrentLanguage();
+    this.languageSelect.value = currentLang;
+  }
+
+  initializeI18n() {
+    // Update UI elements with localized text
+    const popupTitle = document.getElementById('popupTitle')!;
+    const refreshBtn = document.getElementById('refreshBtn')!;
+    const clearBtn = document.getElementById('clearBtn')!;
+    const exportBtn = document.getElementById('exportBtn')!;
+    const loadingText = document.getElementById('loadingText')!;
+
+    if (popupTitle) popupTitle.textContent = this.languageManager.getMessage("popupTitle");
+    if (refreshBtn) refreshBtn.textContent = this.languageManager.getMessage("refreshButton");
+    if (clearBtn) clearBtn.textContent = this.languageManager.getMessage("clearAllButton");
+    if (exportBtn) exportBtn.textContent = this.languageManager.getMessage("exportButton");
+    if (loadingText) loadingText.textContent = this.languageManager.getMessage("loadingText");
   }
 
   setupEventListeners() {
     this.refreshBtn.addEventListener('click', () => this.loadClips());
     this.clearBtn.addEventListener('click', () => this.clearAllClips());
     this.exportBtn.addEventListener('click', () => this.exportClips());
+    this.languageSelect.addEventListener('change', (e) => this.handleLanguageChange(e));
+  }
+
+  async handleLanguageChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const selectedLanguage = target.value;
+    
+    const success = await this.languageManager.setLanguage(selectedLanguage);
+    if (success) {
+      // Re-initialize UI with new language
+      this.initializeI18n();
+      await this.loadClips(); // Reload clips to update time formatting
+      
+      // Send message to background script to update context menu
+      try {
+        await chrome.runtime.sendMessage({ 
+          action: "updateLanguage", 
+          language: selectedLanguage 
+        });
+      } catch (error) {
+        console.log("Background script will automatically detect language change via storage");
+      }
+      
+      this.showToast(this.languageManager.getMessage("languageChanged") || "Language changed successfully!");
+    }
   }
 
   async loadClips() {
@@ -48,7 +178,7 @@ class PopupManager {
   }
 
   updateClipCount(count: number) {
-    this.clipCountElement.textContent = `${count} saved clips`;
+    this.clipCountElement.textContent = this.languageManager.getMessage("statsText", [count.toString()]);
   }
 
   renderClips(clips: ClipData[]) {
@@ -121,11 +251,11 @@ class PopupManager {
       
       if (sortedClips[index]) {
         await navigator.clipboard.writeText(sortedClips[index].text);
-        this.showToast('Copied to clipboard!');
+        this.showToast(this.languageManager.getMessage("toastCopied"));
       }
     } catch (error) {
       console.error('Error copying text:', error);
-      this.showToast('Failed to copy text', 'error');
+      this.showToast(this.languageManager.getMessage("toastCopyError"), 'error');
     }
   }
 
@@ -147,24 +277,25 @@ class PopupManager {
           clips.splice(originalIndex, 1);
           await chrome.storage.sync.set({ clips });
           await this.loadClips(); // Reload the display
-          this.showToast('Clip deleted');
+          this.showToast(this.languageManager.getMessage("toastDeleted"));
         }
       }
     } catch (error) {
       console.error('Error deleting clip:', error);
-      this.showToast('Failed to delete clip', 'error');
+      this.showToast(this.languageManager.getMessage("toastDeleteError"), 'error');
     }
   }
 
   async clearAllClips() {
-    if (confirm('Are you sure you want to delete all clips? This cannot be undone.')) {
+    const confirmMessage = this.languageManager.getMessage("confirmClearAll");
+    if (confirm(confirmMessage)) {
       try {
         await chrome.storage.sync.set({ clips: [] });
         await this.loadClips();
-        this.showToast('All clips deleted');
+        this.showToast(this.languageManager.getMessage("toastAllDeleted"));
       } catch (error) {
         console.error('Error clearing clips:', error);
-        this.showToast('Failed to clear clips', 'error');
+        this.showToast(this.languageManager.getMessage("toastClearError"), 'error');
       }
     }
   }
@@ -175,7 +306,7 @@ class PopupManager {
       const clips: ClipData[] = result.clips || [];
       
       if (clips.length === 0) {
-        this.showToast('No clips to export');
+        this.showToast(this.languageManager.getMessage("toastNoClipsToExport"));
         return;
       }
 
@@ -195,18 +326,19 @@ class PopupManager {
       link.click();
       
       URL.revokeObjectURL(url);
-      this.showToast('Export downloaded');
+      this.showToast(this.languageManager.getMessage("toastExported"));
     } catch (error) {
       console.error('Error exporting clips:', error);
-      this.showToast('Failed to export clips', 'error');
+      this.showToast(this.languageManager.getMessage("toastExportError"), 'error');
     }
   }
 
   showEmptyState() {
+    const contextMenuTitle = this.languageManager.getMessage("contextMenuTitle");
     this.clipsContainer.innerHTML = `
       <div class="empty-state">
-        <h3>No clips saved yet</h3>
-        <p>Right-click on selected text and choose "Lưu đoạn Text này" to start saving clips!</p>
+        <h3>${this.languageManager.getMessage("emptyStateTitle")}</h3>
+        <p>${this.languageManager.getMessage("emptyStateDescription", [contextMenuTitle])}</p>
       </div>
     `;
   }
@@ -214,7 +346,7 @@ class PopupManager {
   showError(message: string) {
     this.clipsContainer.innerHTML = `
       <div class="empty-state">
-        <h3>Error</h3>
+        <h3>${this.languageManager.getMessage("errorTitle")}</h3>
         <p>${message}</p>
       </div>
     `;
@@ -262,10 +394,10 @@ class PopupManager {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return 'now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffMins < 1) return this.languageManager.getMessage("timeAgoNow");
+    if (diffMins < 60) return this.languageManager.getMessage("timeAgoMinutes", [diffMins.toString()]);
+    if (diffHours < 24) return this.languageManager.getMessage("timeAgoHours", [diffHours.toString()]);
+    if (diffDays < 7) return this.languageManager.getMessage("timeAgoDays", [diffDays.toString()]);
     
     return date.toLocaleDateString();
   }

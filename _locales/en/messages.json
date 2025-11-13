@@ -1,0 +1,160 @@
+{
+  "extensionName": {
+    "message": "Text Clipper",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Save copied text in browser",
+    "description": "Description of the extension"
+  },
+  "contextMenuTitle": {
+    "message": "Save this text",
+    "description": "Title for context menu item"
+  },
+  "popupTitle": {
+    "message": "📋 Text Clipper",
+    "description": "Title displayed in popup"
+  },
+  "statsText": {
+    "message": "$COUNT$ saved clips",
+    "description": "Text showing number of saved clips",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "refreshButton": {
+    "message": "🔄 Refresh",
+    "description": "Refresh button text"
+  },
+  "clearAllButton": {
+    "message": "🗑️ Clear All",
+    "description": "Clear all button text"
+  },
+  "exportButton": {
+    "message": "📤 Export",
+    "description": "Export button text"
+  },
+  "emptyStateTitle": {
+    "message": "No clips saved yet",
+    "description": "Title when no clips are saved"
+  },
+  "emptyStateDescription": {
+    "message": "Right-click on selected text and choose \"$MENU_TITLE$\" to start saving clips!",
+    "description": "Description for empty state",
+    "placeholders": {
+      "menu_title": {
+        "content": "$1",
+        "example": "Save this text"
+      }
+    }
+  },
+  "notificationSuccess": {
+    "message": "Text saved successfully!",
+    "description": "Success notification message"
+  },
+  "notificationNoText": {
+    "message": "No text was selected.",
+    "description": "Notification when no text is selected"
+  },
+  "notificationError": {
+    "message": "An error occurred while saving the text.",
+    "description": "Error notification message"
+  },
+  "copyToClipboard": {
+    "message": "📋",
+    "description": "Copy to clipboard button"
+  },
+  "deleteClip": {
+    "message": "🗑️",
+    "description": "Delete clip button"
+  },
+  "confirmClearAll": {
+    "message": "Are you sure you want to delete all clips? This cannot be undone.",
+    "description": "Confirmation message for clearing all clips"
+  },
+  "toastCopied": {
+    "message": "Copied to clipboard!",
+    "description": "Toast message when text is copied"
+  },
+  "toastDeleted": {
+    "message": "Clip deleted",
+    "description": "Toast message when clip is deleted"
+  },
+  "toastAllDeleted": {
+    "message": "All clips deleted",
+    "description": "Toast message when all clips are deleted"
+  },
+  "toastExported": {
+    "message": "Export downloaded",
+    "description": "Toast message when export is completed"
+  },
+  "toastNoClipsToExport": {
+    "message": "No clips to export",
+    "description": "Toast message when there are no clips to export"
+  },
+  "toastCopyError": {
+    "message": "Failed to copy text",
+    "description": "Toast message when copying fails"
+  },
+  "toastDeleteError": {
+    "message": "Failed to delete clip",
+    "description": "Toast message when deletion fails"
+  },
+  "toastClearError": {
+    "message": "Failed to clear clips",
+    "description": "Toast message when clearing fails"
+  },
+  "toastExportError": {
+    "message": "Failed to export clips",
+    "description": "Toast message when export fails"
+  },
+  "loadingText": {
+    "message": "Loading your clips...",
+    "description": "Loading message"
+  },
+  "errorTitle": {
+    "message": "Error",
+    "description": "Error title"
+  },
+  "timeAgoNow": {
+    "message": "now",
+    "description": "Time ago: just now"
+  },
+  "timeAgoMinutes": {
+    "message": "$COUNT$m ago",
+    "description": "Time ago: minutes",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "timeAgoHours": {
+    "message": "$COUNT$h ago",
+    "description": "Time ago: hours",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "timeAgoDays": {
+    "message": "$COUNT$d ago",
+    "description": "Time ago: days",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "languageChanged": {
+    "message": "Language changed successfully!",
+    "description": "Toast message when language is changed"
+  }
+}

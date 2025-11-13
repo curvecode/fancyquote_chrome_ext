@@ -1,11 +1,2 @@
 node_modules/
-dist/background.js
-dist/background.js.map
-dist/content.js
-dist/content.js.map
-dist/icon16.png
-dist/index.html
-dist/manifest.json
-dist/popup.html
-dist/popup.js
-dist/popup.js.map
+dist/
