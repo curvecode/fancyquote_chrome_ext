@@ -1,12 +1,9 @@
-// popup.js - Script for the extension popup
-
 interface ClipData {
   text: string;
   url: string;
   timestamp: number;
 }
 
-// Language management class
 class LanguageManager {
   private currentLanguage: string = 'en';
   private translations: { [key: string]: { [key: string]: string } } = {};
@@ -21,7 +18,6 @@ class LanguageManager {
       if (result.selectedLanguage) {
         this.currentLanguage = result.selectedLanguage;
       } else {
-        // Detect browser language
         const browserLang = navigator.language.split('-')[0];
         if (['en', 'vi', 'cs'].includes(browserLang)) {
           this.currentLanguage = browserLang;
@@ -35,7 +31,6 @@ class LanguageManager {
 
   async loadTranslations() {
     try {
-      // Load translations for current language
       const response = await fetch(`_locales/${this.currentLanguage}/messages.json`);
       const data = await response.json();
       
@@ -45,7 +40,6 @@ class LanguageManager {
       }
     } catch (error) {
       console.error('Error loading translations:', error);
-      // Fallback to English if loading fails
       if (this.currentLanguage !== 'en') {
         this.currentLanguage = 'en';
         await this.loadTranslations();
@@ -56,7 +50,6 @@ class LanguageManager {
   getMessage(key: string, substitutions?: string[]): string {
     let message = this.translations[this.currentLanguage]?.[key] || key;
     
-    // Handle substitutions
     if (substitutions && substitutions.length > 0) {
       substitutions.forEach((sub, index) => {
         const placeholder = `$${index + 1}`;
@@ -119,7 +112,6 @@ class PopupManager {
   }
 
   initializeI18n() {
-    // Update UI elements with localized text
     const popupTitle = document.getElementById('popupTitle')!;
     const refreshBtn = document.getElementById('refreshBtn')!;
     const clearBtn = document.getElementById('clearBtn')!;
@@ -146,11 +138,9 @@ class PopupManager {
     
     const success = await this.languageManager.setLanguage(selectedLanguage);
     if (success) {
-      // Re-initialize UI with new language
       this.initializeI18n();
-      await this.loadClips(); // Reload clips to update time formatting
+      await this.loadClips();
       
-      // Send message to background script to update context menu
       try {
         await chrome.runtime.sendMessage({ 
           action: "updateLanguage", 
@@ -187,14 +177,12 @@ class PopupManager {
       return;
     }
 
-    // Sort clips by timestamp (newest first)
     const sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
 
     this.clipsContainer.innerHTML = sortedClips
       .map((clip, index) => this.createClipHTML(clip, index))
       .join('');
 
-    // Add event listeners to action buttons
     this.attachClipEventListeners();
   }
 
@@ -203,7 +191,6 @@ class PopupManager {
     const timeAgo = this.formatTimeAgo(date);
     const domain = this.extractDomain(clip.url);
     
-    // Truncate text if too long
     const truncatedText = clip.text.length > 150 
       ? clip.text.substring(0, 150) + '...' 
       : clip.text;
@@ -226,7 +213,6 @@ class PopupManager {
   }
 
   attachClipEventListeners() {
-    // Copy button handlers
     document.querySelectorAll('.copy-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const index = parseInt((e.target as HTMLElement).dataset.index!);
@@ -234,7 +220,6 @@ class PopupManager {
       });
     });
 
-    // Delete button handlers
     document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const index = parseInt((e.target as HTMLElement).dataset.index!);
@@ -266,7 +251,6 @@ class PopupManager {
       const sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
       
       if (sortedClips[index]) {
-        // Find the original index in the unsorted array
         const clipToDelete = sortedClips[index];
         const originalIndex = clips.findIndex(clip => 
           clip.timestamp === clipToDelete.timestamp && 
@@ -276,7 +260,7 @@ class PopupManager {
         if (originalIndex !== -1) {
           clips.splice(originalIndex, 1);
           await chrome.storage.sync.set({ clips });
-          await this.loadClips(); // Reload the display
+          await this.loadClips();
           this.showToast(this.languageManager.getMessage("toastDeleted"));
         }
       }
@@ -353,7 +337,6 @@ class PopupManager {
   }
 
   showToast(message: string, type: 'success' | 'error' = 'success') {
-    // Create toast notification
     const toast = document.createElement('div');
     toast.style.cssText = `
       position: fixed;
@@ -369,7 +352,6 @@ class PopupManager {
     `;
     toast.textContent = message;
 
-    // Add animation keyframes
     const style = document.createElement('style');
     style.textContent = `
       @keyframes slideIn {
@@ -418,7 +400,6 @@ class PopupManager {
   }
 }
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   new PopupManager();
 });
