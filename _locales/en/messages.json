@@ -166,4 +166,13 @@
     "message": "Failed to save settings",
     "description": "Toast when settings save fails"
   }
+  ,
+  "labelMaxTruncate": {
+    "message": "Max truncate length:",
+    "description": "Label for max truncate length"
+  },
+  "labelMaxClips": {
+    "message": "Max clips to keep:",
+    "description": "Label for max clips to keep"
+  }
 }

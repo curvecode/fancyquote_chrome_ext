@@ -117,6 +117,11 @@ class PopupManager {
     this.setupEventListeners();
     await this.loadSettings();
     await this.loadConfigPanelState();
+    // Ensure config panel is hidden on initial popup open
+    if (this.configPanel) {
+      this.configPanel.style.display = 'none';
+      this.configPanelOpen = false;
+    }
     await this.loadClips();
   }
 
@@ -131,12 +136,16 @@ class PopupManager {
     const clearBtn = document.getElementById('clearBtn')!;
     const exportBtn = document.getElementById('exportBtn')!;
     const loadingText = document.getElementById('loadingText')!;
+    const labelMaxTruncate = document.getElementById('labelMaxTruncate');
+    const labelMaxClips = document.getElementById('labelMaxClips');
 
     if (popupTitle) popupTitle.textContent = this.languageManager.getMessage("popupTitle");
     if (refreshBtn) refreshBtn.textContent = this.languageManager.getMessage("refreshButton");
     if (clearBtn) clearBtn.textContent = this.languageManager.getMessage("clearAllButton");
     if (exportBtn) exportBtn.textContent = this.languageManager.getMessage("exportButton");
     if (loadingText) loadingText.textContent = this.languageManager.getMessage("loadingText");
+    if (labelMaxTruncate) labelMaxTruncate.textContent = this.languageManager.getMessage('labelMaxTruncate');
+    if (labelMaxClips) labelMaxClips.textContent = this.languageManager.getMessage('labelMaxClips');
   }
 
   setupEventListeners() {
@@ -437,22 +446,23 @@ class PopupManager {
     toast.style.cssText = `
       position: fixed;
       top: 20px;
-      right: 20px;
+      left: 50%;
+      transform: translate(-50%, 0);
       padding: 12px 16px;
       background: ${type === 'error' ? '#e74c3c' : '#27ae60'};
       color: white;
       border-radius: 6px;
       font-size: 14px;
       z-index: 1000;
-      animation: slideIn 0.3s ease;
+      animation: slideIn 0.25s ease;
     `;
     toast.textContent = message;
 
     const style = document.createElement('style');
     style.textContent = `
       @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
+        from { transform: translate(-50%, -10px); opacity: 0; }
+        to { transform: translate(-50%, 0); opacity: 1; }
       }
     `;
     document.head.appendChild(style);
@@ -462,7 +472,7 @@ class PopupManager {
     setTimeout(() => {
       toast.remove();
       style.remove();
-    }, 3000);
+    }, 1500);
   }
 
   formatTimeAgo(date: Date): string {

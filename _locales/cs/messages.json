@@ -166,4 +166,13 @@
     "message": "Nepodařilo se uložit nastavení",
     "description": "Toast při chybě uložení nastavení"
   }
+  ,
+  "labelMaxTruncate": {
+    "message": "Max délka zkrácení:",
+    "description": "Popisek pro max délku zkrácení"
+  },
+  "labelMaxClips": {
+    "message": "Max počet klipů k uchování:",
+    "description": "Popisek pro max počet klipů"
+  }
 }

@@ -166,4 +166,13 @@
     "message": "Không thể lưu cài đặt",
     "description": "Toast khi lưu cài đặt thất bại"
   }
+  ,
+  "labelMaxTruncate": {
+    "message": "Độ dài tối đa cắt ngắn:",
+    "description": "Nhãn cho độ dài cắt ngắn tối đa"
+  },
+  "labelMaxClips": {
+    "message": "Số đoạn tối đa lưu:",
+    "description": "Nhãn cho số đoạn tối đa lưu"
+  }
 }
