@@ -10,11 +10,7 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["storage", "activeTab", "contextMenus", "identity", "scripting", "notifications"],
-  "oauth2": {
-    "client_id": "ID_CLIENT_CỦA_BẠN.apps.googleusercontent.com",
-    "scopes": ["https://www.googleapis.com/auth/drive.file"]
-  },
+  "permissions": ["storage", "activeTab", "contextMenus", "scripting", "notifications"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
