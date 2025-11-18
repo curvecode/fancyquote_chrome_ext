@@ -157,4 +157,13 @@
     "message": "Language changed successfully!",
     "description": "Toast message when language is changed"
   }
+  ,
+  "toastSettingsSaved": {
+    "message": "Settings saved",
+    "description": "Toast when settings are saved"
+  },
+  "toastSettingsSaveError": {
+    "message": "Failed to save settings",
+    "description": "Toast when settings save fails"
+  }
 }

@@ -157,4 +157,13 @@
     "message": "Đã thay đổi ngôn ngữ thành công!",
     "description": "Thông báo toast khi ngôn ngữ được thay đổi"
   }
+  ,
+  "toastSettingsSaved": {
+    "message": "Đã lưu cài đặt",
+    "description": "Toast khi cài đặt được lưu"
+  },
+  "toastSettingsSaveError": {
+    "message": "Không thể lưu cài đặt",
+    "description": "Toast khi lưu cài đặt thất bại"
+  }
 }

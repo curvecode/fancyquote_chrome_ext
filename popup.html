@@ -16,7 +16,6 @@
     }
 
     .header {
-      text-align: center;
       margin-bottom: 20px;
       position: relative;
     }
@@ -52,6 +51,49 @@
     .language-dropdown option {
       background: #667eea;
       color: white;
+    }
+
+    .config-btn {
+      margin-left: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .config-panel {
+      display: none;
+      margin-top: 8px;
+      background: rgba(0,0,0,0.15);
+      padding: 10px;
+      border-radius: 8px;
+      backdrop-filter: blur(6px);
+    }
+
+    .config-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .config-row input[type="number"] {
+      width: 100px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: none;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      outline: none;
+    }
+
+    .config-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
     }
 
     .stats {
@@ -202,6 +244,22 @@
         <option value="vi">VN</option>
         <option value="cs">CZ</option>
       </select>
+      <button id="editConfigBtn" class="config-btn" aria-label="Edit configuration">⚙️</button>
+    </div>
+  </div>
+
+  <div id="configPanel" class="config-panel">
+    <div class="config-row">
+      <label for="maxTruncate">Max truncate length:</label>
+      <input id="maxTruncate" type="number" min="10" max="2000" />
+    </div>
+    <div class="config-row">
+      <label for="maxClips">Max clips to keep:</label>
+      <input id="maxClips" type="number" min="1" max="1000" />
+    </div>
+    <div class="config-actions">
+      <button id="saveConfigBtn" class="btn">Save</button>
+      <button id="cancelConfigBtn" class="btn">Cancel</button>
     </div>
   </div>
 

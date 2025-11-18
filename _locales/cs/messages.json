@@ -157,4 +157,13 @@
     "message": "Jazyk byl úspěšně změněn!",
     "description": "Toast zpráva při změně jazyka"
   }
+  ,
+  "toastSettingsSaved": {
+    "message": "Nastavení uloženo",
+    "description": "Toast při uložení nastavení"
+  },
+  "toastSettingsSaveError": {
+    "message": "Nepodařilo se uložit nastavení",
+    "description": "Toast při chybě uložení nastavení"
+  }
 }

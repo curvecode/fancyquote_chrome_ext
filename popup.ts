@@ -85,6 +85,18 @@ class PopupManager {
   private exportBtn: HTMLElement;
   private languageSelect: HTMLSelectElement;
   private languageManager: LanguageManager;
+  private editConfigBtn!: HTMLElement;
+  private configPanel!: HTMLElement;
+  private saveConfigBtn!: HTMLElement;
+  private cancelConfigBtn!: HTMLElement;
+  private maxTruncateInput!: HTMLInputElement;
+  private maxClipsInput!: HTMLInputElement;
+
+  private settings = {
+    maxTruncate: 150,
+    maxClips: 200
+  };
+  private configPanelOpen = false;
 
   constructor() {
     this.clipsContainer = document.getElementById('clipsContainer')!;
@@ -102,8 +114,10 @@ class PopupManager {
     await this.languageManager.loadSavedLanguage();
     this.initializeLanguageSelector();
     this.initializeI18n();
-    await this.loadClips();
     this.setupEventListeners();
+    await this.loadSettings();
+    await this.loadConfigPanelState();
+    await this.loadClips();
   }
 
   initializeLanguageSelector() {
@@ -130,6 +144,85 @@ class PopupManager {
     this.clearBtn.addEventListener('click', () => this.clearAllClips());
     this.exportBtn.addEventListener('click', () => this.exportClips());
     this.languageSelect.addEventListener('change', (e) => this.handleLanguageChange(e));
+
+    // Config UI wiring
+    this.editConfigBtn = document.getElementById('editConfigBtn')!;
+    this.configPanel = document.getElementById('configPanel')!;
+    this.saveConfigBtn = document.getElementById('saveConfigBtn')!;
+    this.cancelConfigBtn = document.getElementById('cancelConfigBtn')!;
+    this.maxTruncateInput = document.getElementById('maxTruncate') as HTMLInputElement;
+    this.maxClipsInput = document.getElementById('maxClips') as HTMLInputElement;
+
+    this.editConfigBtn.addEventListener('click', () => this.toggleConfigPanel());
+    this.saveConfigBtn.addEventListener('click', () => this.saveSettings());
+    this.cancelConfigBtn.addEventListener('click', () => this.hideConfigPanel());
+  }
+
+  async loadSettings() {
+    try {
+      const result = await chrome.storage.sync.get(['settings']);
+      const s = result.settings || {};
+      this.settings.maxTruncate = s.maxTruncate ?? this.settings.maxTruncate;
+      this.settings.maxClips = s.maxClips ?? this.settings.maxClips;
+
+      if (this.maxTruncateInput) this.maxTruncateInput.value = String(this.settings.maxTruncate);
+      if (this.maxClipsInput) this.maxClipsInput.value = String(this.settings.maxClips);
+    } catch (error) {
+      console.error('Error loading settings', error);
+    }
+  }
+
+  toggleConfigPanel() {
+    if (!this.configPanel) return;
+    this.configPanelOpen = !this.configPanelOpen;
+    this.configPanel.style.display = this.configPanelOpen ? 'block' : 'none';
+    if (this.configPanelOpen) {
+      if (this.maxTruncateInput) this.maxTruncateInput.value = String(this.settings.maxTruncate);
+      if (this.maxClipsInput) this.maxClipsInput.value = String(this.settings.maxClips);
+    }
+    // persist state
+    chrome.storage.sync.set({ configPanelOpen: this.configPanelOpen }).catch(() => {});
+  }
+
+  hideConfigPanel() {
+    if (!this.configPanel) return;
+    this.configPanel.style.display = 'none';
+    this.configPanelOpen = false;
+    chrome.storage.sync.set({ configPanelOpen: false }).catch(() => {});
+  }
+
+  async loadConfigPanelState() {
+    try {
+      const result = await chrome.storage.sync.get('configPanelOpen');
+      if (result.configPanelOpen) {
+        this.configPanelOpen = true;
+        if (this.configPanel) this.configPanel.style.display = 'block';
+      } else {
+        this.configPanelOpen = false;
+        if (this.configPanel) this.configPanel.style.display = 'none';
+      }
+    } catch (error) {
+      console.error('Error loading config panel state', error);
+    }
+  }
+
+  async saveSettings() {
+    if (!this.maxTruncateInput || !this.maxClipsInput) return;
+    const newMaxTruncate = parseInt(this.maxTruncateInput.value || String(this.settings.maxTruncate), 10);
+    const newMaxClips = parseInt(this.maxClipsInput.value || String(this.settings.maxClips), 10);
+
+    this.settings.maxTruncate = Math.max(10, Math.min(5000, isNaN(newMaxTruncate) ? this.settings.maxTruncate : newMaxTruncate));
+    this.settings.maxClips = Math.max(1, Math.min(5000, isNaN(newMaxClips) ? this.settings.maxClips : newMaxClips));
+
+    try {
+      await chrome.storage.sync.set({ settings: this.settings });
+      this.showToast(this.languageManager.getMessage('toastSettingsSaved') || 'Settings saved');
+      this.hideConfigPanel();
+      await this.loadClips();
+    } catch (error) {
+      console.error('Error saving settings', error);
+      this.showToast(this.languageManager.getMessage('toastSettingsSaveError') || 'Failed to save settings', 'error');
+    }
   }
 
   async handleLanguageChange(event: Event) {
@@ -178,8 +271,10 @@ class PopupManager {
     }
 
     const sortedClips = clips.sort((a, b) => b.timestamp - a.timestamp);
+    const max = this.settings?.maxClips ?? 200;
+    const limited = sortedClips.slice(0, max);
 
-    this.clipsContainer.innerHTML = sortedClips
+    this.clipsContainer.innerHTML = limited
       .map((clip, index) => this.createClipHTML(clip, index))
       .join('');
 
@@ -191,8 +286,9 @@ class PopupManager {
     const timeAgo = this.formatTimeAgo(date);
     const domain = this.extractDomain(clip.url);
     
-    const truncatedText = clip.text.length > 150 
-      ? clip.text.substring(0, 150) + '...' 
+    const truncLen = this.settings?.maxTruncate ?? 150;
+    const truncatedText = clip.text.length > truncLen
+      ? clip.text.substring(0, truncLen) + '...'
       : clip.text;
 
     return `
