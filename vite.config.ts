@@ -17,7 +17,7 @@ export default defineConfig({
       }
     },
     sourcemap: true,
-    minify: false, // Keep false for easier debugging
+    minify: true, // Keep false for easier debugging
     target: 'es2020'
   },
   resolve: {

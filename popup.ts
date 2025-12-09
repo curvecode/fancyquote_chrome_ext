@@ -91,6 +91,8 @@ class PopupManager {
   private cancelConfigBtn!: HTMLElement;
   private maxTruncateInput!: HTMLInputElement;
   private maxClipsInput!: HTMLInputElement;
+  private importBtn!: HTMLElement;
+  private importFileInput!: HTMLInputElement;
 
   private settings = {
     maxTruncate: 150,
@@ -138,6 +140,7 @@ class PopupManager {
     const loadingText = document.getElementById('loadingText')!;
     const labelMaxTruncate = document.getElementById('labelMaxTruncate');
     const labelMaxClips = document.getElementById('labelMaxClips');
+    const importBtn = document.getElementById('importBtn');
 
     if (popupTitle) popupTitle.textContent = this.languageManager.getMessage("popupTitle");
     if (refreshBtn) refreshBtn.textContent = this.languageManager.getMessage("refreshButton");
@@ -146,6 +149,7 @@ class PopupManager {
     if (loadingText) loadingText.textContent = this.languageManager.getMessage("loadingText");
     if (labelMaxTruncate) labelMaxTruncate.textContent = this.languageManager.getMessage('labelMaxTruncate');
     if (labelMaxClips) labelMaxClips.textContent = this.languageManager.getMessage('labelMaxClips');
+    if (importBtn) importBtn.textContent = this.languageManager.getMessage('importButton');
   }
 
   setupEventListeners() {
@@ -161,10 +165,14 @@ class PopupManager {
     this.cancelConfigBtn = document.getElementById('cancelConfigBtn')!;
     this.maxTruncateInput = document.getElementById('maxTruncate') as HTMLInputElement;
     this.maxClipsInput = document.getElementById('maxClips') as HTMLInputElement;
+    this.importBtn = document.getElementById('importBtn')!;
+    this.importFileInput = document.getElementById('importFileInput') as HTMLInputElement;
 
     this.editConfigBtn.addEventListener('click', () => this.toggleConfigPanel());
     this.saveConfigBtn.addEventListener('click', () => this.saveSettings());
     this.cancelConfigBtn.addEventListener('click', () => this.hideConfigPanel());
+    this.importBtn.addEventListener('click', () => this.importFileInput.click());
+    this.importFileInput.addEventListener('change', (e) => this.handleImportFile(e));
   }
 
   async loadSettings() {
@@ -503,6 +511,132 @@ class PopupManager {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  async handleImportFile(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+
+    if (!file) {
+      this.showToast(this.languageManager.getMessage('toastImportNoFile'), 'error');
+      return;
+    }
+
+    try {
+      const fileContent = await this.readFileAsText(file);
+      const importedData = JSON.parse(fileContent);
+
+      if (!Array.isArray(importedData)) {
+        this.showToast(this.languageManager.getMessage('toastImportInvalidFormat'), 'error');
+        return;
+      }
+
+      // Validate format
+      // Enhanced validation and sanitization
+      const MAX_TEXT_LENGTH = 1000;
+      function isValidUrl(url: string): boolean {
+        try {
+          // Only allow http(s) URLs
+          const parsed = new URL(url);
+          return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+        } catch {
+          return false;
+        }
+      }
+      function sanitizeText(text: string): string {
+        // Simple HTML escape
+        return text.replace(/[&<>"'`]/g, function (char) {
+          const escape: { [key: string]: string } = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+            '`': '&#96;'
+          };
+          return escape[char] || char;
+        });
+      }
+      const validClips: ClipData[] = [];
+      for (const item of importedData) {
+        if (
+          typeof item === 'object' &&
+          typeof item.text === 'string' &&
+          typeof item.url === 'string' &&
+          typeof item.date === 'string' &&
+          item.text.length > 0 &&
+          item.text.length <= MAX_TEXT_LENGTH &&
+          isValidUrl(item.url) &&
+          !isNaN(new Date(item.date).getTime())
+        ) {
+          validClips.push({
+            text: sanitizeText(item.text),
+            url: item.url,
+            timestamp: new Date(item.date).getTime()
+          });
+        }
+      }
+      if (validClips.length === 0) {
+        this.showToast(this.languageManager.getMessage('toastImportInvalidFormat'), 'error');
+        return;
+      }
+
+      // Convert imported data to ClipData format
+      const clipsToImport: ClipData[] = validClips;
+
+      // Get existing clips and merge
+      const result = await chrome.storage.sync.get('clips');
+      const existingClips: ClipData[] = result.clips || [];
+
+      // Merge: add imported clips to existing ones, with deduplication
+      const allClips = [...existingClips, ...clipsToImport];
+      // Deduplicate based on text, url, and timestamp
+      const seen = new Set<string>();
+      const mergedClips: ClipData[] = [];
+      for (const clip of allClips) {
+        const key = `${clip.text}|${clip.url}|${clip.timestamp}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          mergedClips.push(clip);
+        }
+      }
+
+      // Save merged clips
+      await chrome.storage.sync.set({ clips: mergedClips });
+
+      // Update UI
+      await this.loadClips();
+      this.hideConfigPanel();
+
+      // Show success toast
+      const successMsg = this.languageManager.getMessage('toastImportSuccess', [clipsToImport.length.toString()]);
+      this.showToast(successMsg);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      const failMsg = this.languageManager.getMessage('toastImportError', [errorMsg]);
+      this.showToast(failMsg, 'error');
+    } finally {
+      // Reset file input
+      if (target) {
+        target.value = '';
+      }
+    }
+  }
+
+  readFileAsText(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result;
+        if (typeof content === 'string') {
+          resolve(content);
+        } else {
+          reject(new Error('Failed to read file'));
+        }
+      };
+      reader.onerror = () => reject(new Error('File read error'));
+      reader.readAsText(file);
+    });
   }
 }
 
