@@ -174,5 +174,37 @@
   "labelMaxClips": {
     "message": "Max počet klipů k uchování:",
     "description": "Popisek pro max počet klipů"
+  },
+  "importButton": {
+    "message": "📥 Importovat",
+    "description": "Text tlačítka importu"
+  },
+  "toastImportSuccess": {
+    "message": "Úspěšně importováno $COUNT$ klipů",
+    "description": "Toast zpráva při úspěšném importu",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "toastImportError": {
+    "message": "Import selhal: $ERROR$",
+    "description": "Toast zpráva když import selhá",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Neplatný formát JSON"
+      }
+    }
+  },
+  "toastImportInvalidFormat": {
+    "message": "Neplatný formát souboru. Očekáván JSON seznam s poli {text, url, date}",
+    "description": "Toast když importovaný soubor má špatný formát"
+  },
+  "toastImportNoFile": {
+    "message": "Nebyl vybrán žádný soubor",
+    "description": "Toast když uživatel zruší výběr souboru"
   }
 }

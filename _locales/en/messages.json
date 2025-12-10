@@ -174,5 +174,37 @@
   "labelMaxClips": {
     "message": "Max clips to keep:",
     "description": "Label for max clips to keep"
+  },
+  "importButton": {
+    "message": "📥 Import",
+    "description": "Import button text"
+  },
+  "toastImportSuccess": {
+    "message": "Successfully imported $COUNT$ clips",
+    "description": "Toast message when import succeeds",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "toastImportError": {
+    "message": "Import failed: $ERROR$",
+    "description": "Toast message when import fails",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Invalid JSON format"
+      }
+    }
+  },
+  "toastImportInvalidFormat": {
+    "message": "Invalid file format. Expected JSON array with {text, url, date} fields",
+    "description": "Toast when imported file has wrong format"
+  },
+  "toastImportNoFile": {
+    "message": "No file selected",
+    "description": "Toast when user cancels file selection"
   }
 }

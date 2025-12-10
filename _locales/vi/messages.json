@@ -174,5 +174,37 @@
   "labelMaxClips": {
     "message": "Số đoạn tối đa lưu:",
     "description": "Nhãn cho số đoạn tối đa lưu"
+  },
+  "importButton": {
+    "message": "📥 Nhập",
+    "description": "Văn bản nút nhập"
+  },
+  "toastImportSuccess": {
+    "message": "Nhập thành công $COUNT$ đoạn",
+    "description": "Toast khi nhập thành công",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "toastImportError": {
+    "message": "Nhập thất bại: $ERROR$",
+    "description": "Toast khi nhập thất bại",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Định dạng JSON không hợp lệ"
+      }
+    }
+  },
+  "toastImportInvalidFormat": {
+    "message": "Định dạng tệp không hợp lệ. Cần là mảng JSON với các trường {text, url, date}",
+    "description": "Toast khi tệp nhập có định dạng sai"
+  },
+  "toastImportNoFile": {
+    "message": "Không có tệp nào được chọn",
+    "description": "Toast khi người dùng hủy bỏ lựa chọn tệp"
   }
 }
